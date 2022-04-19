@@ -1,0 +1,39 @@
+from urllib.request import urlopen, Request
+from bs4 import BeautifulSoup
+
+url = 'https://crypto.com/price'
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
+
+req = Request(url, headers=headers)
+
+webpage = urlopen(req).read()
+
+soup = BeautifulSoup(webpage, 'html.parser')
+
+title = soup.title
+
+'''print(title.text)'''
+
+crypto = soup.findAll('span', attrs={'class': 'tv-screener__description'})
+
+crypto_table = soup.findAll('tbody')
+
+crypto_table = crypto_table[0]
+
+rows = crypto_table.findAll('tr')
+
+for row in rows[:5]:
+    cols = row.findAll('td')
+    name = cols[0].find('span', attrs={'class':'tv-screener__description'})
+    name = name.text.strip()
+    price = float(cols[1].text)
+    change_text = cols[2].text
+    change_float = float(cols[2].text.strip('%'))
+
+    s_price = round(price/(1+(change_float/100)), 2)
+
+    print(f"Cryptocurrency: {name}")
+    print(f"Current Price: {price}")
+    print(f"Percent Change: {change_text}")
+    print(f"Starting Price: {s_price}")
+    input()
