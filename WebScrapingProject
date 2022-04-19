@@ -1,5 +1,6 @@
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
+from twilio.rest import Client
 
 url = 'https://crypto.com/price'
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
@@ -10,9 +11,15 @@ webpage = urlopen(req).read()
 
 soup = BeautifulSoup(webpage, 'html.parser')
 
-title = soup.title
+accountSID = "AC2f54ce9d58a8c2d9440b68d464a5f9f8"
 
-'''print(title.text)'''
+authToken = "e8a5d5407be0914d0bdffae4c6083595"
+
+client = Client(accountSID, authToken)
+
+TwilioNumber = "+17072100329"
+
+mycellphone = "+17147132206"
 
 crypto = soup.findAll('span', attrs={'class': 'tv-screener__description'})
 
@@ -37,3 +44,10 @@ for row in rows[:5]:
     print(f"Percent Change: {change_text}")
     print(f"Starting Price: {s_price}")
     input()
+
+    if name('Bitcoin') < price(40000):
+        textmessage = client.messages.create(to=mycellphone, from_=TwilioNumber, body="Bitcoin is below $40,000")
+        print(textmessage.status)
+    if name('Ethereum') < price(3000):
+        textmessage = client.messages.create(to=mycellphone, from_=TwilioNumber, body="Ethereum is below $3,000")
+        print(textmessage.status)
