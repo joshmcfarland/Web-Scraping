@@ -2,7 +2,7 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 from twilio.rest import Client
 
-url = 'https://crypto.com/price'
+url = 'https://livecoinwatch.com'
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
 
 req = Request(url, headers=headers)
@@ -11,9 +11,9 @@ webpage = urlopen(req).read()
 
 soup = BeautifulSoup(webpage, 'html.parser')
 
-accountSID = "AC2f54ce9d58a8c2d9440b68d464a5f9f8"
+accountSID = "*"
 
-authToken = "e8a5d5407be0914d0bdffae4c6083595"
+authToken = "*"
 
 client = Client(accountSID, authToken)
 
@@ -21,20 +21,14 @@ TwilioNumber = "+17072100329"
 
 mycellphone = "+17147132206"
 
-crypto = soup.findAll('span', attrs={'class': 'tv-screener__description'})
-
-crypto_table = soup.findAll('tbody')
-
-crypto_table = crypto_table[0]
-
-rows = crypto_table.findAll('tr')
+crypto = soup.findAll('tr', attrs={'class': 'table-row filter-row'})
 
 for row in rows[:5]:
     cols = row.findAll('td')
-    name = cols[1].find('span', attrs={'class':'chakra-text css-1mrk1dy'})
+    name = cols[1].findAll('small', attrs={'class':'abr text-truncate'})[0].text
     name = name.text.strip()
-    price = float(cols[2].find('span', attrs={'class':'css-0'}).text)
-    change_text = cols[2].find('span', attrs={'class': 'chakra-text css-1348rpl'}).text
+    price = float(cols[2].text.lstrip('$'))
+    change_text = cols[8].find('span', attrs={'class': 'chakra-text css-1348rpl'}).text
     change_float = float(cols[2].text.strip('%'))
 
     s_price = round(price/(1+(change_float/100)), 2)
