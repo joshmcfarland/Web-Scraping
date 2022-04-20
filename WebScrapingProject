@@ -11,9 +11,11 @@ webpage = urlopen(req).read()
 
 soup = BeautifulSoup(webpage, 'html.parser')
 
-accountSID = "*"
-
+# for security purposes the following are commented out
+'''
+accountSID = "*" 
 authToken = "*"
+'''
 
 client = Client(accountSID, authToken)
 
